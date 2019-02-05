@@ -1,0 +1,19 @@
+{
+  "name": "aken-gulp-starter",
+  "version": "1.0.0",
+  "description": "starter setup for gulp",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yesh/aken-gulp-starter.git"
+  },
+  "author": "yeshe gyatso sartori",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yesh/aken-gulp-starter/issues"
+  },
+  "homepage": "https://github.com/yesh/aken-gulp-starter#readme"
+}
