@@ -15,5 +15,36 @@
   "bugs": {
     "url": "https://github.com/yesh/aken-gulp-starter/issues"
   },
-  "homepage": "https://github.com/yesh/aken-gulp-starter#readme"
+  "homepage": "https://github.com/yesh/aken-gulp-starter#readme",
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "babel-preset-env": "^1.7.0",
+    "beeper": "^1.1.1",
+    "fancy-log": "^1.3.3",
+    "gulp": "^4.0.0",
+    "gulp-autoprefixer": "^6.0.0",
+    "gulp-babel": "^8.0.0",
+    "gulp-clean-dest": "^0.2.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-htmltidy": "^0.2.4",
+    "gulp-insert": "^0.5.0",
+    "gulp-jshint": "^2.1.0",
+    "gulp-minify-html": "^1.0.6",
+    "gulp-sass": "^4.0.2",
+    "gulp-uglify": "^3.0.1",
+    "jshint": "^2.10.1",
+    "jshint-stylish": "^2.2.1",
+    "merge2": "^1.2.3",
+    "minimist": "^1.2.0",
+    "through2": "^3.0.0"
+  },
+  "browserslist": [
+    "last 2 major versions",
+    "last 4 firefox major version",
+    "last 4 safari major version",
+    "last 4 opera major version",
+    "last 4 android major version",
+    "last 2 iOS major version"
+  ]
 }
