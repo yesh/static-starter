@@ -58,7 +58,7 @@ function js() {
       src(location.sources.jsApplication)
         .pipe(jshint())
         .pipe(jshint.reporter('jshint-stylish'), { beep: true })
-        .pipe(babel({ presets: ['env'] }))
+        .pipe(babel())
     )
     .pipe(concat(config.project + '.js'))
     .pipe(config.isProduction ? uglify() : through2.obj())
