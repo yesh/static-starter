@@ -22,7 +22,7 @@ const config = {
   isProduction: minimist.prod
 }
 
-const location = {
+let location = {
   compiled: {
     css: config.publicPath + 'css/',
     js: config.publicPath + 'js'
@@ -31,7 +31,7 @@ const location = {
     jsVendors: [
       // note: avoid .min versions
       // example: 'node_modules/jquery/dist/jquery.js'
-      'node_modules/flickity/dist/flickity.pkgd.js'
+      'node_modules/jquery/dist/jquery.slim.js'
     ],
     jsApplication: config.srcPath + 'js/**/*.js',
     css: [
@@ -42,20 +42,19 @@ const location = {
       // example: 'node_modules/bootstrap/scss'
     ]
   }
-
 }
 
 function css() {
-  return src(location.sources.css)
+  return src(location.sources.css, { sourcemaps: !config.isProduction })
     .pipe(config.isProduction ? sass({ includePaths: location.sources.frameworks, outputStyle: 'compressed' }).on('error', handleError) : sass().on('error', handleError))
     .pipe(autoprefixer())
     .pipe(cleanDest(location.compiled.css))
-    .pipe(dest(location.compiled.css));
+    .pipe(dest(location.compiled.css, { sourcemaps: !config.isProduction }));
 }
 
 function js() {
   return merge2(
-      src(location.sources.jsVendors),
+      src(location.sources.jsVendors, { allowEmpty: true }),
       src(location.sources.jsApplication)
         .pipe(jshint())
         .pipe(jshint.reporter('jshint-stylish'), { beep: true })
@@ -94,9 +93,11 @@ exports.tidifyHtml = tidifyHtml;
 
 exports.minifyHtml = minifyHtml;
 
-
 function handleError(err) {
   beeper(2);
   log.error('\n\n' + '  |   Error: ' + err.messageOriginal + ' /// line: ' + err.line + '/' + err.column + '\n' + '  |   In file: ' + err.file + '\n');
   this.emit('end');
 }
+
+watch(config.srcPath + 'sass/**/*.s*ss', css);
+watch(config.srcPath + 'js/**/*.js', js);
