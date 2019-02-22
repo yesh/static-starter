@@ -46,5 +46,8 @@
     "last 4 opera major version",
     "last 4 android major version",
     "last 2 iOS major version"
-  ]
+  ],
+  "dependencies": {
+    "jquery": "^3.3.1"
+  }
 }
