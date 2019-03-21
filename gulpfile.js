@@ -2,8 +2,9 @@ const { series, parallel, src, dest, watch, start } = require('gulp'),
       sass = require('gulp-sass'),
       concat = require('gulp-concat'),
       merge2 = require('merge2'),
-      minify = require('gulp-minify-html'),
-      tidify = require('gulp-htmltidy'),
+      htmlmin = require('gulp-htmlmin'),
+      htmltidy = require('gulp-htmltidy'),
+      sourcemaps = require('gulp-sourcemaps'),
       autoprefixer = require('gulp-autoprefixer'),
       cleanDest = require('gulp-clean-dest'),
       jshint = require('gulp-jshint'),
@@ -17,7 +18,7 @@ const { series, parallel, src, dest, watch, start } = require('gulp'),
 const config = {
   project: 'application',
   srcPath: 'src/',
-  publicPath: 'static/',
+  publicPath: 'public/',
   htmlPath: 'public/',
   isProduction: minimist.prod
 }
@@ -30,26 +31,27 @@ let location = {
   sources: {
     jsVendors: [
       // note: avoid .min versions
-      // example: 'node_modules/jquery/dist/jquery.js'
-      'node_modules/jquery/dist/jquery.slim.js'
+      'node_modules/jquery/dist/jquery.js'
     ],
     jsApplication: config.srcPath + 'js/**/*.js',
     css: [
-      // example: 'node_modules/flickity/dist/flickity.css'
       config.srcPath + 'sass/application.s*ss'
     ],
     frameworks: [
-      // example: 'node_modules/bootstrap/scss'
+      // 'node_modules/bootstrap/scss'
     ]
   }
 }
 
 function css() {
-  return src(location.sources.css, { sourcemaps: !config.isProduction })
-    .pipe(config.isProduction ? sass({ includePaths: location.sources.frameworks, outputStyle: 'compressed' }).on('error', handleError) : sass().on('error', handleError))
+  return src(location.sources.css)
+    .pipe(config.isProduction ? through2.obj() : sourcemaps.init())
+    .pipe(config.isProduction ? sass({ includePaths: location.sources.frameworks, outputStyle: 'compressed' }).on('error', handleError) : sass({ includePaths: location.sources.frameworks }).on('error', handleError))
     .pipe(autoprefixer())
-    .pipe(cleanDest(location.compiled.css))
-    .pipe(dest(location.compiled.css, { sourcemaps: !config.isProduction }));
+  .pipe(concat(config.project + '.css'))
+  .pipe(cleanDest(location.compiled.css))
+  .pipe(config.isProduction ? through2.obj() : sourcemaps.write('maps'))
+  .pipe(dest(location.compiled.css));
 }
 
 function js() {
@@ -58,7 +60,7 @@ function js() {
       src(location.sources.jsApplication)
         .pipe(jshint())
         .pipe(jshint.reporter('jshint-stylish'), { beep: true })
-        .pipe(babel())
+        .pipe(babel({"presets": ["@babel/preset-env"]]}))
     )
     .pipe(concat(config.project + '.js'))
     .pipe(config.isProduction ? uglify() : through2.obj())
@@ -68,7 +70,7 @@ function js() {
 
 function tidifyHtml() {
   return src(config.htmlPath + '**/*.html')
-    .pipe(tidify({
+    .pipe(htmltidy({
       doctype: 'html5',
       hideComments: false,
       indent: true,
@@ -83,7 +85,7 @@ function tidifyHtml() {
 
 function minifyHtml() {
   return src(config.htmlPath + '**/*.html')
-    .pipe(minify())
+    .pipe(htmlmin({ collapseWhitespace: true }))
     .pipe(dest(config.htmlPath));
 }
 
@@ -93,11 +95,15 @@ exports.tidifyHtml = tidifyHtml;
 
 exports.minifyHtml = minifyHtml;
 
+exports.watch = series(parallel(css, js), w);
+
+function w() {
+  watch(config.srcPath + 'sass/**/*.s*ss', css);
+  watch(config.srcPath + 'js/**/*.js', js);
+}
+
 function handleError(err) {
   beeper(2);
   log.error('\n\n' + '  |   Error: ' + err.messageOriginal + ' /// line: ' + err.line + '/' + err.column + '\n' + '  |   In file: ' + err.file + '\n');
   this.emit('end');
 }
-
-watch(config.srcPath + 'sass/**/*.s*ss', css);
-watch(config.srcPath + 'js/**/*.js', js);

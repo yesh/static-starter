@@ -1,5 +1,5 @@
 {
-  "name": "aken-gulp-starter",
+  "name": "gulp-starter",
   "version": "1.0.0",
   "description": "starter setup for gulp",
   "main": "index.js",
