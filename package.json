@@ -4,18 +4,11 @@
   "description": "starter setup for gulp",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/yesh/aken-gulp-starter.git"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "gulp"
   },
   "author": "yeshe gyatso sartori",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/yesh/aken-gulp-starter/issues"
-  },
-  "homepage": "https://github.com/yesh/aken-gulp-starter#readme",
   "devDependencies": {
     "@babel/core": "^7.3.3",
     "@babel/preset-env": "^7.3.1",
@@ -26,17 +19,19 @@
     "gulp-babel": "^8.0.0-beta.2",
     "gulp-clean-dest": "^0.2.0",
     "gulp-concat": "^2.6.1",
+    "gulp-htmlmin": "^5.0.1",
     "gulp-htmltidy": "^0.2.4",
     "gulp-insert": "^0.5.0",
     "gulp-jshint": "^2.1.0",
-    "gulp-minify-html": "^1.0.6",
     "gulp-sass": "^4.0.2",
+    "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.1",
     "jshint": "^2.10.1",
     "jshint-stylish": "^2.2.1",
     "merge2": "^1.2.3",
     "minimist": "^1.2.0",
-    "through2": "^3.0.0"
+    "through2": "^3.0.0",
+    "jquery": "^3.3.1"
   },
   "browserslist": [
     "last 2 major versions",
@@ -45,8 +40,5 @@
     "last 4 opera major version",
     "last 4 android major version",
     "last 2 iOS major version"
-  ],
-  "dependencies": {
-    "jquery": "^3.3.1"
-  }
+  ]
 }

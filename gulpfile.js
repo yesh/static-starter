@@ -1,4 +1,4 @@
-const { series, parallel, src, dest, watch, start } = require('gulp'),
+const { series, parallel, src, dest, watch } = require('gulp'),
       sass = require('gulp-sass'),
       concat = require('gulp-concat'),
       merge2 = require('merge2'),
@@ -31,7 +31,7 @@ let location = {
   sources: {
     jsVendors: [
       // note: avoid .min versions
-      'node_modules/jquery/dist/jquery.js'
+      'node_modules/jquery/dist/jquery.js',
     ],
     jsApplication: config.srcPath + 'js/**/*.js',
     css: [
@@ -60,7 +60,9 @@ function js() {
       src(location.sources.jsApplication)
         .pipe(jshint())
         .pipe(jshint.reporter('jshint-stylish'), { beep: true })
-        .pipe(babel({"presets": ["@babel/preset-env"]]}))
+        .pipe(babel({
+          "presets": [["@babel/preset-env"]]
+        }))
     )
     .pipe(concat(config.project + '.js'))
     .pipe(config.isProduction ? uglify() : through2.obj())
