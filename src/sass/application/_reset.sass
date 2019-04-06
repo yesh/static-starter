@@ -91,6 +91,9 @@ q:before
   content: ""
   content: none
 
+button:not(:disabled)
+  cursor: pointer
+
 // Attributes & states
 
 [hidden] 
@@ -99,5 +102,6 @@ q:before
 [disabled]
   cursor: not-allowed
 
-*:focus:not(:focus-visible) 
-  outline: none
+*
+  outline: none !important
+  outline: 0 !important
