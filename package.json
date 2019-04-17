@@ -34,11 +34,15 @@
     "jquery": "^3.3.1"
   },
   "browserslist": [
-    "last 2 major versions",
-    "last 4 firefox major version",
-    "last 4 safari major version",
-    "last 4 opera major version",
-    "last 4 android major version",
-    "last 2 iOS major version"
+    "last 1 major version",
+    ">= 1%",
+    "Chrome >= 45",
+    "Firefox >= 38",
+    "Edge >= 12",
+    "Explorer >= 10",
+    "iOS >= 9",
+    "Safari >= 9",
+    "Android >= 4.4",
+    "Opera >= 30"
   ]
 }
