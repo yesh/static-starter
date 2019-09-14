@@ -39,6 +39,7 @@ body
   font-family: inherit
   font-size: inherit
   line-height: inherit
+  -webkit-font-smoothing: antialiased
 
 a,
 a:visited 
@@ -57,7 +58,6 @@ main
 
 * 
   box-sizing: border-box
-  -webkit-font-smoothing: antialiased
 
 *:before,
 *:after 
@@ -91,8 +91,12 @@ q:before
   content: ""
   content: none
 
-button:not(:disabled)
-  cursor: pointer
+button
+  background: transparent
+  border: none
+  padding: 0
+  &:not(:disabled)
+    cursor: pointer
 
 // Attributes & states
 
