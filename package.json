@@ -44,6 +44,7 @@
     "Opera >= 30"
   ],
   "dependencies": {
+    "gulp-eslint": "^6.0.0",
     "smoothscroll-polyfill": "^0.4.4"
   }
 }
