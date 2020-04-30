@@ -5,7 +5,7 @@ const { series, parallel, src, dest, watch } = require('gulp'),
       sourcemaps = require('gulp-sourcemaps'),
       autoprefixer = require('gulp-autoprefixer'),
       cleanDest = require('gulp-clean-dest'),
-      jshint = require('gulp-jshint'),
+      eslint = require('gulp-eslint'),
       babel = require('gulp-babel'),
       uglify = require('gulp-uglify'),
       svgmin = require('gulp-svgmin'),
@@ -15,7 +15,7 @@ const { series, parallel, src, dest, watch } = require('gulp'),
       minimist = require('minimist')(process.argv.slice(2));
 
 const config = {
-  project: 'application',
+  project: 'app',
   srcPath: 'src/',
   publicPath: 'static/',
   forProduction: minimist.prod
@@ -28,15 +28,15 @@ let location = {
   },
   sources: {
     jsVendors: [
-      // note: no .min versions, will be minified by the task
-      'node_modules/jquery/dist/jquery.js'
+      'node_modules/smoothscroll-polyfill/dist/smoothscroll.js',
+      config.srcPath + 'js/vendor/*.js'
     ],
-    jsApplication: config.srcPath + 'js/**/*.js',
+    jsApp: config.srcPath + 'js/*.js',
     css: [
-      config.srcPath + 'sass/application.s*ss'
+      config.srcPath + 'sass/app.s*ss'
     ],
     frameworks: [
-      'node_modules/bootstrap/scss'
+
     ]
   }
 }
@@ -55,9 +55,10 @@ function css() {
 function js() {
   return merge2(
       src(location.sources.jsVendors, { allowEmpty: true }),
-      src(location.sources.jsApplication)
-        .pipe(jshint())
-        .pipe(jshint.reporter('jshint-stylish'), { beep: true })
+      src(location.sources.jsApp)
+        .pipe(eslint())
+        .pipe(eslint.format())
+        // .pipe(jshint.reporter('jshint-stylish'), { beep: true })
         .pipe(babel({
           "presets": [["@babel/preset-env"]]
         }))
@@ -70,12 +71,13 @@ function js() {
 
 function svg() {
   return src(config.srcPath + 'svg/**/*.svg')
+    .pipe(cleanDest(config.publicPath + 'svg'))
     .pipe(svgmin({
       plugins: [{
-        removeViewBox: false
+        removeViewBox: false,
+        convertStyleToAttrs: false
       }]
     }))
-    .pipe(cleanDest(config.publicPath + 'svg'))
     .pipe(dest(config.publicPath + 'svg'));
 }
 
