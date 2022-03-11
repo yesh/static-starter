@@ -1,101 +1,97 @@
-const { series, parallel, src, dest, watch, start } = require('gulp')
-
-const sass = require('gulp-sass')(require('sass')),
-  concat = require('gulp-concat'),
-  merge2 = require('merge2'),
-  minify = require('gulp-minify-html'),
-  tidify = require('gulp-htmltidy'),
-  autoprefixer = require('gulp-autoprefixer'),
-  cleanDest = require('gulp-clean-dest'),
-  jshint = require('gulp-jshint'),
-  babel = require('gulp-babel'),
-  uglify = require('gulp-uglify'),
-  through2 = require('through2'),
-  log = require('fancy-log'),
-  minimist = require('minimist')(process.argv.slice(2))
+const { series, parallel, src, dest, watch } = require('gulp'),
+      sass = require('gulp-sass')(require('sass')),
+      concat = require('gulp-concat'),
+      merge2 = require('merge2'),
+      sourcemaps = require('gulp-sourcemaps'),
+      autoprefixer = require('gulp-autoprefixer'),
+      cleanDest = require('gulp-clean-dest'),
+      eslint = require('gulp-eslint'),
+      babel = require('gulp-babel'),
+      uglify = require('gulp-uglify'),
+      svgmin = require('gulp-svgmin'),
+      through2 = require('through2'),
+      log = require('fancy-log'),
+      minimist = require('minimist')(process.argv.slice(2));
 
 const config = {
-  project: 'application',
+  project: 'app',
   srcPath: 'src/',
   publicPath: 'static/',
-  htmlPath: 'public/',
-  isProduction: minimist.prod,
+  forProduction: minimist.prod
 }
 
-const location = {
+let location = {
   compiled: {
     css: config.publicPath + 'css/',
     js: config.publicPath + 'js',
   },
   sources: {
     jsVendors: [
-      // note: avoid .min versions
-      // example: 'node_modules/jquery/dist/jquery.js'
+      'node_modules/smoothscroll-polyfill/dist/smoothscroll.js',
+      config.srcPath + 'js/vendor/*.js'
     ],
-    jsApplication: config.srcPath + 'js/**/*.js',
+    jsApp: config.srcPath + 'js/*.js',
     css: [
-      // example: 'node_modules/flickity/dist/flickity.css'
-      config.srcPath + 'sass/application.s*ss',
+      config.srcPath + 'sass/app.s*ss'
     ],
     frameworks: [
-      // example: 'node_modules/bootstrap/scss'
-    ],
-  },
+
+    ]
+  }
 }
 
 function css() {
-  return src(location.sources.css, { allowEmpty: true })
-    .pipe(config.isProduction ? sass({ includePaths: location.sources.frameworks, outputStyle: 'compressed' }).on('error', handleError) : sass().on('error', handleError))
+  return src(location.sources.css, {allowEmpty: true})
+    .pipe(config.forProduction ? through2.obj() : sourcemaps.init())
+    .pipe(config.forProduction ? sass({ includePaths: location.sources.frameworks, outputStyle: 'compressed' }).on('error', handleError) : sass({ includePaths: location.sources.frameworks }).on('error', handleError))
     .pipe(autoprefixer())
-    .pipe(cleanDest(location.compiled.css))
-    .pipe(dest(location.compiled.css))
+  .pipe(concat(config.project + '.css'))
+  .pipe(cleanDest(location.compiled.css))
+  .pipe(config.forProduction ? through2.obj() : sourcemaps.write('maps'))
+  .pipe(dest(location.compiled.css));
 }
 
 function js() {
   return merge2(
-    src(location.sources.jsVendors, { allowEmpty: true }),
-    src(location.sources.jsApplication, { allowEmpty: true })
-      .pipe(jshint())
-      .pipe(jshint.reporter('jshint-stylish'))
-      .pipe(babel({ presets: ['env'] }))
-  )
+      src(location.sources.jsVendors, { allowEmpty: true }),
+      src(location.sources.jsApp, {allowEmpty: true})
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(babel({
+          "presets": [["@babel/preset-env"]]
+        }))
+    )
     .pipe(concat(config.project + '.js'))
-    .pipe(config.isProduction ? uglify() : through2.obj())
+    .pipe(config.forProduction ? uglify() : through2.obj())
     .pipe(cleanDest(location.compiled.js))
     .pipe(dest(location.compiled.js))
 }
 
-function tidifyHtml() {
-  return src(config.htmlPath + '**/*.html')
-    .pipe(
-      tidify({
-        doctype: 'html5',
-        hideComments: false,
-        indent: true,
-        wrap: 0,
-        'indent-spaces': 2,
-        'alt-text': 'image',
-        'drop-empty-elements': false,
-        'drop-empty-paras': false,
-      })
-    )
-    .pipe(dest(config.htmlPath))
+function svg() {
+  return src(config.srcPath + 'svg/**/*.svg')
+    .pipe(cleanDest(config.publicPath + 'svg'))
+    .pipe(svgmin({
+      plugins: [{
+        removeViewBox: false,
+        convertStyleToAttrs: false
+      }]
+    }))
+    .pipe(dest(config.publicPath + 'svg'));
 }
 
-function minifyHtml() {
-  return src(config.htmlPath + '**/*.html')
-    .pipe(minify())
-    .pipe(dest(config.htmlPath))
+exports.default = parallel(css, js, svg);
+
+exports.watch = series(parallel(css, js, svg), w);
+
+exports.svgmin = svg;
+
+function w() {
+  watch(config.srcPath + 'sass/**/*.s*ss', css);
+  watch(config.srcPath + 'js/**/*.js', js);
+  watch(config.srcPath + 'svg/**/*.svg', svg);
 }
-
-exports.default = parallel(css, js)
-
-exports.tidifyHtml = tidifyHtml
-
-exports.minifyHtml = minifyHtml
 
 function handleError(err) {
-  beeper(2)
   log.error('\n\n' + '  |   Error: ' + err.messageOriginal + ' /// line: ' + err.line + '/' + err.column + '\n' + '  |   In file: ' + err.file + '\n')
   this.emit('end')
 }
