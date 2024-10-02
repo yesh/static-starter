@@ -1,4 +1,6 @@
 node_modules
-.DS_Store
+.DS_store
+.env
 
-package-lock.json
+public/shared/assets/css/**/*
+public/shared/assets/js/**/*

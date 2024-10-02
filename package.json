@@ -1,48 +1,61 @@
 {
   "name": "yva-gulp-starter",
-  "version": "2.0",
+  "version": "3.0",
   "description": "starter setup for gulp",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "gulp"
+    "dev": "NODE_ENV=development gulp gwatch",
+    "build": "NODE_ENV=production gulp --prod"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/yesh/static-starter.git"
   },
-  "author": "yeshe g. sartori",
+  "author": "yesh van aken",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/yesh/static-starter/issues"
   },
   "browserslist": [
     "defaults",
-    "not IE 11",
-    "maintained node versions"
+    "not IE 11"
   ],
-  "dependencies": {
-    "@babel/core": "^7.2.2",
-    "@babel/preset-env": "^7.3.1",
+  "devDependencies": {
+    "@babel/core": "^7.21.0",
+    "@babel/preset-env": "^7.20.2",
+    "babel-loader": "^9.1.2",
     "babel-preset-env": "^1.7.0",
-    "fancy-log": "^2.0.0",
-    "gulp": "^4.0.0",
-    "gulp-autoprefixer": "^8.0.0",
-    "gulp-babel": "^8.0.0",
-    "gulp-clean-dest": "^0.2.0",
-    "gulp-cli": "^2.2.0",
+    "beeper": "3.0.0",
+    "browser-sync": "^3.0.3",
+    "del": "7.1.0",
+    "dotenv": "^16.0.3",
+    "dotenv-webpack": "^8.0.1",
+    "gulp": "^5.0.0",
+    "gulp-changed": "^5.0.2",
+    "gulp-cli": "^3.0.0",
     "gulp-concat": "^2.6.1",
-    "gulp-eslint": "^6.0.0",
     "gulp-insert": "^0.5.0",
-    "gulp-jshint": "^2.1.0",
+    "gulp-postcss": "^10.0.0",
+    "gulp-purgecss": "^6.0.0",
+    "gulp-replace": "^1.1.3",
     "gulp-sass": "^5.1.0",
     "gulp-sourcemaps": "^3.0.0",
     "gulp-svgmin": "^4.1.0",
-    "gulp-uglify": "^3.0.2",
-    "merge2": "^1.3.0",
-    "minimist": "^1.2.3",
-    "sass": "^1.49.9",
-    "smoothscroll-polyfill": "^0.4.4",
-    "through2": "^4.0.2"
+    "gulp-webp": "^5.0.0",
+    "minimist": "^1.2.8",
+    "postcss": "^8.4.21",
+    "sass": "^1.59.2",
+    "terser-webpack-plugin": "^5.3.7",
+    "through2": "^4.0.2",
+    "uuid": "^10.0.0",
+    "webpack": "^5.76.1",
+    "webpack-stream": "^7.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.3.4",
+    "gsap": "^3.10.4",
+    "swiper": "^11.1.14",
+    "tailwindcss": "^3.4.13"
   }
 }
